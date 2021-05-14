@@ -107,8 +107,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         mSearchInput = findViewById(R.id.search_input)
-//        mSearchInput.setText("Test test test")
-//        mLoadButton = findViewById(R.id.test_load)
         val context: Context = getBaseContext()
         loadData(context)
         val pb: ProgressBar = findViewById(R.id.progressBar)
@@ -116,38 +114,14 @@ class MainActivity : AppCompatActivity() {
         Log.i("mactivity dataPersons", "${dataPersons.size}")
 //        dataPersons.forEachIndexed { idx, person -> Log.i("data", "> Item $idx:\n$person") }
         mListView = findViewById(R.id.person_list)
-//        val adapter: PersonAdapter  = PersonAdapter(context, R.id.person_list, dataPersons)
-//        Log.i("mactivity first", parseDate(dataPersons.toTypedArray()[0].educationPeriod.start))
-        val adapter = MyListAdapter(this,
-            dataPersons.map{ it.name }.toTypedArray(),
-            dataPersons.map{ it.phone }.toTypedArray(),
-            dataPersons.map{ it.height }.toTypedArray(),
-        )
-//        mListView.setAdapter(adapter);
-//        mListView.setTextFilterEnabled(true)
+        val adapter = MyListAdapter(this, R.layout.custom_list, dataPersons)
         mListView.setAdapter(adapter)
-
-//        mLoadButton.setOnClickListener {
-//            count++
-////            mSearchInput.setText("count ${count}")
-//            val inputText: String = mSearchInput.getText().toString()
-//            val person = dataPersons.find { it.name.contains(inputText, ignoreCase = true) }
-////            val person = dataPersons.get(count)
-//            Log.i("mactivity countdata", "${count} : ${person?.name} ${person?.id}")
-//            val t = Toast.makeText(applicationContext, person?.temperament, Toast.LENGTH_LONG)
-//            t.show()
-//        }
         mListView.setOnItemClickListener {
             parent: AdapterView<*>?, view: View?,
                 position: Int, id: Long ->
-
-//            val personView = findViewById(R.layout.person)
-//            setContentView(R.layout.person)
             val person = dataPersons[position]
-//            val mPersonName = findViewById(R.id.person_name)
-//            mPersonName.setText(person.name)
             val intent = Intent(this, PersonActivity::class.java)
-            Log.i("mactivity p name", person.name)
+//            Log.i("mactivity p name", person.name)
             intent.putExtra(PersonActivity.NAME, person.name)
             intent.putExtra(PersonActivity.PHONE, person.phone)
             intent.putExtra(PersonActivity.BIO, person.biography)
@@ -155,27 +129,21 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra(PersonActivity.PERIOD, "${parseDate(ePeriod.start)} - ${parseDate(ePeriod.end)}")
             intent.putExtra(PersonActivity.TEMPERAMENT, person.temperament)
             startActivity(intent)
-//            intent.putExtra("person_name", person.name)
-//            intent.putExtra("person_name", person.name)
-//            intent.putExtra("person_name", person.name)
-
-//            val mPersonName: TextView = findViewById(R.id.person_name)
-//            mPersonName.setText(person.name)
 //            Toast.makeText(this, "Position: ${position}: ${dataPersons[position]}", Toast.LENGTH_LONG).show()
         }
         mSearchInput.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-//                TODO("Not yet implemented")
             }
-
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 Log.i("mactivity ontextchanged", "${s}")
                 adapter.getFilter().filter(s)
             }
-
             override fun afterTextChanged(s: Editable?) {
-//                TODO("Not yet implemented")
             }
         })
+        val mCloseButton: ImageButton = findViewById(R.id.drop_search_button)
+        mCloseButton.setOnClickListener {
+            mSearchInput.setText("")
+        }
     }
 }
